@@ -1,0 +1,1110 @@
+# Wayfinder Frontend Development Rules for Cursor
+
+**Version:** 1.0  
+**Date:** December 2, 2025  
+**Purpose:** Comprehensive frontend development rules for Wayfinder project
+
+---
+
+## 🎯 Technology Stack (MANDATORY)
+
+### Primary Stack (RECOMMENDED)
+
+**Web Admin Panel:**
+- Framework: Next.js 14 with React & TypeScript
+- Styling: Tailwind CSS
+- UI Library: shadcn/ui (Radix UI + Tailwind)
+- State Management: Zustand (shared with mobile!)
+- Forms: React Hook Form + Zod
+- HTTP Client: Axios (shared with mobile!)
+- Data Fetching: React Query (@tanstack/react-query)
+- Charts: Recharts
+- Canvas: Konva.js (for floor plans)
+- Icons: lucide-react
+
+**Mobile Navigation App:**
+- Framework: React Native with Expo & TypeScript
+- Navigation: React Navigation
+- State Management: Zustand (shared with web!)
+- HTTP Client: Axios (shared with web!)
+- QR Scanner: expo-barcode-scanner
+- Storage: expo-secure-store
+- SVG: react-native-svg
+- UI: React Native Paper or NativeBase
+
+**Why This Stack?**
+- ✅ 30-50% code sharing between web and mobile
+- ✅ Same language (TypeScript) for both platforms
+- ✅ Same libraries (Zustand, Axios) work on both
+- ✅ Team efficiency (React developers can work on both)
+- ✅ Largest ecosystem and community support
+
+---
+
+## 📁 Code Structure Rules
+
+### Folder Structure (MANDATORY)
+
+**Web (Next.js):**
+```
+src/
+├── api/                      # API services (SHARED with mobile!)
+│   ├── client.ts            # HTTP client configuration
+│   ├── auth.service.ts      # Authentication API calls
+│   ├── building.service.ts  # Building CRUD
+│   ├── node.service.ts      # Node operations
+│   ├── route.service.ts     # Route calculation
+│   └── interceptors/        # Request/response interceptors
+├── components/              # Reusable UI components
+│   ├── common/             # Shared components (Button, Input, Card, Modal)
+│   ├── layout/             # Layout components (Header, Sidebar, Footer)
+│   └── features/           # Feature-specific components
+├── pages/ or app/           # Page components (Next.js App Router)
+├── hooks/                   # Custom React hooks (SHARED with mobile!)
+├── store/                   # Zustand stores (SHARED with mobile!)
+├── types/                   # TypeScript type definitions (SHARED with mobile!)
+├── utils/                   # Utility functions
+├── config/                  # Configuration files
+└── assets/                  # Static assets
+```
+
+**Mobile (React Native):**
+```
+src/
+├── api/                      # API services (SHARED with web!)
+├── components/              # Reusable UI components
+├── screens/                 # Screen components
+├── navigation/              # Navigation configuration
+├── hooks/                   # Custom hooks (SHARED with web!)
+├── store/                   # Zustand stores (SHARED with web!)
+├── types/                   # TypeScript types (SHARED with web!)
+├── utils/                   # Utility functions
+└── assets/                  # Static assets
+```
+
+### File Naming Rules
+
+✅ **DO:**
+- Use PascalCase for components: `BuildingCard.tsx`, `NavigationScreen.tsx`
+- Use camelCase for utilities: `apiClient.ts`, `formatDistance.ts`
+- Use kebab-case for styles: `building-card.css`
+- Keep file names descriptive and specific
+
+❌ **DON'T:**
+- Use abbreviations: `BldgCrd.tsx`
+- Use generic names: `Component1.tsx`, `Utils.ts`
+- Mix naming conventions
+
+### One Component Per File
+
+✅ **DO:**
+```typescript
+// BuildingCard.tsx
+export function BuildingCard({ building }: BuildingCardProps) {
+  return <div>...</div>;
+}
+```
+
+❌ **DON'T:**
+```typescript
+// Components.tsx - Multiple components in one file
+export function BuildingCard() { ... }
+export function FloorCard() { ... }
+```
+
+**Exception:** Small, tightly-coupled helper components can be in the same file.
+
+---
+
+## 🔷 TypeScript Rules (MANDATORY)
+
+### RULE 1: Always Use Types
+
+✅ **DO:**
+```typescript
+interface BuildingDto {
+  id: string;
+  name: string;
+  address: string;
+  floors: FloorDto[];
+}
+
+function getBuilding(id: string): Promise<BuildingDto> {
+  // ...
+}
+```
+
+❌ **DON'T:**
+```typescript
+function getBuilding(id: any): Promise<any> {  // ❌ NEVER use 'any'
+  // ...
+}
+```
+
+### RULE 2: Define Interfaces for Props/Parameters
+
+✅ **DO:**
+```typescript
+interface BuildingCardProps {
+  building: BuildingDto;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+}
+
+export function BuildingCard({ building, onEdit, onDelete }: BuildingCardProps) {
+  // ...
+}
+```
+
+❌ **DON'T:**
+```typescript
+export function BuildingCard(props: any) {  // ❌
+  const building = props.building;
+  // ...
+}
+```
+
+### RULE 3: Use Enums for Fixed Values
+
+✅ **DO:**
+```typescript
+enum NodeType {
+  Room = 0,
+  Corridor = 1,
+  Elevator = 2,
+  Stairs = 3,
+  Restroom = 4,
+  Exit = 5,
+  Entrance = 6,
+  Parking = 7,
+}
+
+function getNodeIcon(type: NodeType): string {
+  switch (type) {
+    case NodeType.Room:
+      return 'door-icon';
+    // ...
+  }
+}
+```
+
+❌ **DON'T:**
+```typescript
+function getNodeIcon(type: number): string {  // ❌ What does 0 mean?
+  if (type === 0) return 'door-icon';
+  // ...
+}
+```
+
+### RULE 4: Shared Types Location
+
+**All shared types MUST be in `src/types/` directory:**
+- `types/api.types.ts` - API response types (ServiceResponse, PaginatedList)
+- `types/building.types.ts` - Building-related types
+- `types/node.types.ts` - Node-related types
+- `types/route.types.ts` - Route-related types
+- `types/auth.types.ts` - Authentication types
+
+**These types are SHARED between web and mobile!**
+
+---
+
+## 🌐 API Integration Rules (MANDATORY)
+
+### RULE 1: Create Dedicated Service Classes
+
+✅ **DO:**
+```typescript
+// api/building.service.ts (SHARED between web and mobile!)
+import { apiClient } from './client';
+
+export class BuildingService {
+  static async getAll(page: number, size: number) {
+    const response = await apiClient.get<ServiceResponse<PaginatedList<BuildingDto>>>(
+      `/api/buildings?pageNumber=${page}&pageSize=${size}`
+    );
+    
+    if (response.data.isSuccess) {
+      return response.data.data!;
+    }
+    
+    throw new Error(response.data.errorMessage || 'Failed to fetch buildings');
+  }
+
+  static async getById(id: string): Promise<BuildingDto> {
+    const response = await apiClient.get<ServiceResponse<BuildingDto>>(
+      `/api/buildings/${id}`
+    );
+    
+    if (!response.data.isSuccess || !response.data.data) {
+      throw new Error(response.data.errorMessage || 'Building not found');
+    }
+    
+    return response.data.data;
+  }
+}
+```
+
+❌ **DON'T:**
+```typescript
+// ❌ Direct API calls in components
+function BuildingList() {
+  useEffect(() => {
+    axios.get('/api/buildings').then(setBuildings);
+  }, []);
+}
+```
+
+### RULE 2: Always Handle API Errors
+
+✅ **DO:**
+```typescript
+async function loadBuildings() {
+  try {
+    setIsLoading(true);
+    const buildings = await BuildingService.getAll(1, 20);
+    setBuildings(buildings);
+    setError(null);
+  } catch (error) {
+    setError(error instanceof Error ? error.message : 'Failed to load buildings');
+    toast.error('Failed to load buildings');
+  } finally {
+    setIsLoading(false);
+  }
+}
+```
+
+❌ **DON'T:**
+```typescript
+async function loadBuildings() {
+  const buildings = await BuildingService.getAll(1, 20);  // ❌ No error handling
+  setBuildings(buildings);
+}
+```
+
+### RULE 3: Validate API Response
+
+✅ **DO:**
+```typescript
+static async getById(id: string): Promise<BuildingDto> {
+  const response = await apiClient.get<ServiceResponse<BuildingDto>>(`/api/buildings/${id}`);
+  
+  if (!response.data.isSuccess) {
+    throw new Error(response.data.errorMessage || 'Failed to fetch building');
+  }
+  
+  if (!response.data.data) {
+    throw new Error('Building not found');
+  }
+  
+  return response.data.data;
+}
+```
+
+### RULE 4: HTTP Client Configuration
+
+**MUST use axios with interceptors for token refresh:**
+
+```typescript
+// api/client.ts (SHARED between web and mobile!)
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { AuthService } from './auth.service';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7014';
+
+export const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  timeout: 30000,
+});
+
+// Request interceptor - Add access token
+apiClient.interceptors.request.use(
+  async (config: InternalAxiosRequestConfig) => {
+    const token = await AuthService.getAccessToken();
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor - Handle token refresh
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const refreshToken = await AuthService.getRefreshToken();
+        if (!refreshToken) throw new Error('No refresh token');
+        
+        const { accessToken } = await AuthService.refreshToken(refreshToken);
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        await AuthService.logout();
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+```
+
+### RULE 5: ServiceResponse Pattern
+
+**All API responses are wrapped in ServiceResponse<T>:**
+
+```typescript
+interface ServiceResponse<T> {
+  isSuccess: boolean;
+  data?: T;
+  errorMessage?: string;
+  errors?: string[];
+}
+```
+
+**ALWAYS check `isSuccess` before accessing `data`!**
+
+---
+
+## 🔄 State Management Rules (MANDATORY: Zustand)
+
+### RULE 1: Use Zustand for State Management
+
+**Zustand stores are SHARED between web and mobile!**
+
+✅ **DO:**
+```typescript
+// store/authStore.ts (SHARED!)
+import { create } from 'zustand';
+import { AuthService } from '../api/auth.service';
+
+interface AuthStore {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => Promise<void>;
+  checkAuth: () => Promise<void>;
+}
+
+export const useAuth = create<AuthStore>((set) => ({
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+
+  login: async (credentials) => {
+    try {
+      set({ isLoading: true, error: null });
+      const { user } = await AuthService.login(credentials);
+      set({ user, isAuthenticated: true, isLoading: false });
+    } catch (error) {
+      set({ 
+        error: error instanceof Error ? error.message : 'Login failed',
+        isLoading: false 
+      });
+      throw error;
+    }
+  },
+
+  logout: async () => {
+    await AuthService.logout();
+    set({ user: null, isAuthenticated: false, error: null });
+  },
+
+  checkAuth: async () => {
+    const token = await AuthService.getAccessToken();
+    set({ isAuthenticated: !!token });
+  },
+}));
+```
+
+### RULE 2: Keep State Minimal
+
+✅ **DO:**
+```typescript
+const [buildings, setBuildings] = useState<BuildingDto[]>([]);
+const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+```
+
+❌ **DON'T:**
+```typescript
+// ❌ Storing derived state
+const [buildings, setBuildings] = useState<BuildingDto[]>([]);
+const [buildingCount, setBuildingCount] = useState(0);  // ❌ Can be derived
+const [hasBuildings, setHasBuildings] = useState(false);  // ❌ Can be derived
+```
+
+**Instead, derive it:**
+```typescript
+const buildingCount = buildings.length;
+const hasBuildings = buildings.length > 0;
+```
+
+### RULE 3: Update State Immutably
+
+✅ **DO:**
+```typescript
+setBuildings([...buildings, newBuilding]);
+setUser({ ...user, name: 'New Name' });
+setBuildings(buildings.filter(b => b.id !== idToRemove));
+```
+
+❌ **DON'T:**
+```typescript
+buildings.push(newBuilding);  // ❌ Mutating state directly
+setBuildings(buildings);
+```
+
+---
+
+## 🧩 Component Rules
+
+### RULE 1: Keep Components Small
+
+✅ **DO:**
+- Single Responsibility: One component, one purpose
+- Max ~200 lines of code
+- Extract logic into custom hooks
+- Break down complex components
+
+❌ **DON'T:**
+- Create 1000+ line components
+- Mix multiple concerns in one component
+- Put all logic in the component
+
+### RULE 2: Use Descriptive Component Names
+
+✅ **DO:**
+```typescript
+BuildingCard.tsx
+BuildingList.tsx
+BuildingForm.tsx
+BuildingDetailView.tsx
+```
+
+❌ **DON'T:**
+```typescript
+Card.tsx          // ❌ Too generic
+Component1.tsx    // ❌ Not descriptive
+Bldg.tsx          // ❌ Abbreviation
+```
+
+### RULE 3: Extract Reusable Logic into Hooks
+
+✅ **DO:**
+```typescript
+// hooks/useBuildings.ts (SHARED with mobile!)
+export function useBuildings(page: number, pageSize: number) {
+  const [buildings, setBuildings] = useState<PaginatedList<BuildingDto> | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadBuildings();
+  }, [page, pageSize]);
+
+  async function loadBuildings() {
+    try {
+      setIsLoading(true);
+      const data = await BuildingService.getAll(page, pageSize);
+      setBuildings(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return { buildings, isLoading, error, reload: loadBuildings };
+}
+
+// Usage in component
+function BuildingList() {
+  const { buildings, isLoading, error } = useBuildings(1, 20);
+  // ...
+}
+```
+
+### RULE 4: Use Composition Over Inheritance
+
+✅ **DO:**
+```typescript
+function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <div>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </div>
+  );
+}
+
+function DashboardPage() {
+  return (
+    <Layout>
+      <DashboardContent />
+    </Layout>
+  );
+}
+```
+
+---
+
+## 🎨 Styling Rules
+
+### RULE 1: Use Tailwind CSS (Web)
+
+✅ **DO:**
+- Use Tailwind utility classes
+- Use design tokens (CSS variables) for colors
+- Follow mobile-first responsive design
+
+```typescript
+<div className="flex items-center gap-4 p-6 bg-white rounded-lg shadow-md">
+  <h1 className="text-2xl font-bold text-gray-900">Buildings</h1>
+</div>
+```
+
+### RULE 2: Use Consistent Design Tokens
+
+✅ **DO:**
+```css
+:root {
+  --color-primary: #3b82f6;
+  --color-secondary: #10b981;
+  --color-danger: #ef4444;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+}
+```
+
+### RULE 3: Responsive Design (MANDATORY)
+
+✅ **MUST:**
+- Design mobile-first
+- Test on multiple screen sizes
+- Use relative units (rem, em, %)
+- Implement breakpoints consistently
+
+```css
+/* Mobile first */
+.container {
+  padding: 1rem;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .container {
+    padding: 3rem;
+  }
+}
+```
+
+---
+
+## ⚡ Performance Rules
+
+### RULE 1: Lazy Load Components
+
+✅ **DO:**
+```typescript
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const BuildingsPage = lazy(() => import('./pages/BuildingsPage'));
+
+<Suspense fallback={<LoadingSpinner />}>
+  <Routes>
+    <Route path="/dashboard" element={<DashboardPage />} />
+    <Route path="/buildings" element={<BuildingsPage />} />
+  </Routes>
+</Suspense>
+```
+
+### RULE 2: Memoize Expensive Calculations
+
+✅ **DO:**
+```typescript
+const sortedBuildings = useMemo(() => {
+  return buildings.sort((a, b) => a.name.localeCompare(b.name));
+}, [buildings]);
+```
+
+### RULE 3: Use React Query for Data Caching
+
+✅ **DO:**
+```typescript
+export function useBuildings(page = 1, size = 10) {
+  return useQuery({
+    queryKey: ['buildings', page, size],
+    queryFn: () => BuildingService.getAll(page, size),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+  });
+}
+```
+
+### RULE 4: Debounce Search Inputs
+
+✅ **DO:**
+```typescript
+const [searchQuery, setSearchQuery] = useState('');
+const debouncedSearch = useDebounce(searchQuery, 500);
+
+useEffect(() => {
+  if (debouncedSearch) {
+    performSearch(debouncedSearch);
+  }
+}, [debouncedSearch]);
+```
+
+### RULE 5: Optimize Images
+
+✅ **MUST:**
+- Use Next.js Image component (web)
+- Compress images before uploading
+- Implement lazy loading
+- Use appropriate formats (WebP, AVIF)
+
+```typescript
+<Image
+  src="/building.jpg"
+  alt="Building"
+  width={800}
+  height={600}
+  loading="lazy"
+/>
+```
+
+---
+
+## 🔒 Security Rules (MANDATORY)
+
+### RULE 1: Never Store Sensitive Data in Plain Text
+
+✅ **DO:**
+```typescript
+// Web: Use HttpOnly cookies or memory storage
+// Mobile: Use SecureStore
+import * as SecureStore from 'expo-secure-store';
+await SecureStore.setItemAsync('accessToken', token);
+```
+
+❌ **DON'T:**
+```typescript
+localStorage.setItem('accessToken', token);  // ❌ NOT secure
+AsyncStorage.setItem('password', password);  // ❌ NOT secure
+```
+
+### RULE 2: Sanitize User Input
+
+✅ **DO:**
+```typescript
+import DOMPurify from 'dompurify';
+const cleanHTML = DOMPurify.sanitize(userInput);
+```
+
+❌ **DON'T:**
+```typescript
+<div dangerouslySetInnerHTML={{ __html: userInput }} />  // ❌
+```
+
+### RULE 3: Validate All Inputs
+
+✅ **DO:**
+```typescript
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(12, 'Password must be at least 12 characters'),
+});
+
+const { errors } = schema.safeParse(formData);
+```
+
+### RULE 4: Implement Proper Authentication
+
+✅ **DO:**
+```typescript
+<ProtectedRoute>
+  <DashboardPage />
+</ProtectedRoute>
+
+if (isTokenExpired(accessToken)) {
+  await refreshAccessToken();
+}
+```
+
+---
+
+## 🧪 Testing Rules
+
+### RULE 1: Write Tests for Critical Paths
+
+✅ **MUST Test:**
+- Authentication flow
+- Route calculation
+- QR code scanning
+- Building CRUD operations
+- User management
+
+### RULE 2: Follow AAA Pattern
+
+✅ **DO:**
+```typescript
+test('calculates route successfully', async () => {
+  // Arrange
+  const mockRouteService = {
+    calculateRoute: jest.fn().mockResolvedValue(mockRoute),
+  };
+
+  // Act
+  const result = await mockRouteService.calculateRoute(startId, endId, false);
+
+  // Assert
+  expect(result.pathFound).toBe(true);
+  expect(result.path.length).toBeGreaterThan(0);
+});
+```
+
+### RULE 3: Mock External Dependencies
+
+✅ **DO:**
+```typescript
+jest.mock('../api/building.service');
+
+test('loads buildings', async () => {
+  (BuildingService.getAll as jest.Mock).mockResolvedValue(mockBuildings);
+  
+  render(<BuildingList />);
+  
+  await waitFor(() => {
+    expect(screen.getByText('Building A')).toBeInTheDocument();
+  });
+});
+```
+
+---
+
+## ⚠️ Error Handling Rules (MANDATORY)
+
+### RULE 1: Always Display User-Friendly Errors
+
+✅ **DO:**
+```typescript
+catch (error) {
+  if (error instanceof Error) {
+    toast.error(error.message);
+  } else {
+    toast.error('An unexpected error occurred. Please try again.');
+  }
+}
+```
+
+❌ **DON'T:**
+```typescript
+catch (error) {
+  console.log(error);  // ❌ Silent failure
+}
+```
+
+### RULE 2: Implement Error Boundaries
+
+✅ **DO:**
+```typescript
+<ErrorBoundary fallback={<ErrorScreen />}>
+  <App />
+</ErrorBoundary>
+```
+
+### RULE 3: Always Show Loading States
+
+✅ **DO:**
+```typescript
+if (isLoading) return <LoadingSpinner />;
+if (error) return <ErrorMessage message={error} />;
+return <BuildingList buildings={buildings} />;
+```
+
+---
+
+## ♿ Accessibility Rules (MANDATORY)
+
+### RULE 1: Use Semantic HTML
+
+✅ **DO:**
+```tsx
+<button onClick={handleClick}>Submit</button>
+<nav>
+  <a href="/dashboard">Dashboard</a>
+</nav>
+<main>
+  <h1>Page Title</h1>
+</main>
+```
+
+❌ **DON'T:**
+```tsx
+<div onClick={handleClick}>Submit</div>  // ❌ Use <button>
+```
+
+### RULE 2: Provide Alt Text for Images
+
+✅ **DO:**
+```tsx
+<img src="/building.jpg" alt="Hospital Building Entrance" />
+```
+
+❌ **DON'T:**
+```tsx
+<img src="/building.jpg" alt="" />  // ❌ Empty alt
+<img src="/building.jpg" />         // ❌ Missing alt
+```
+
+### RULE 3: Ensure Keyboard Navigation
+
+✅ **DO:**
+- All interactive elements must be keyboard accessible
+- Implement focus styles
+- Use proper tab order
+
+```css
+button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+```
+
+---
+
+## 📝 Git & Version Control Rules
+
+### RULE 1: Write Meaningful Commit Messages
+
+✅ **DO:**
+```
+[Feature] Add building search functionality
+[Fix] Resolve QR scanner camera permission issue
+[Refactor] Extract route calculation logic into service
+[Docs] Update API integration guide
+[Test] Add unit tests for authentication flow
+```
+
+❌ **DON'T:**
+```
+Update code
+Fix bug
+Changes
+asdf
+WIP
+```
+
+### RULE 2: Create Feature Branches
+
+✅ **DO:**
+```bash
+git checkout -b feature/building-search
+git checkout -b fix/qr-scanner-crash
+git checkout -b refactor/auth-service
+```
+
+### RULE 3: Keep Commits Atomic
+
+✅ **DO:**
+- One commit per logical change
+- Commit related changes together
+- Write descriptive commit messages
+
+---
+
+## 📚 Documentation Rules
+
+### RULE 1: Document Complex Logic
+
+✅ **DO:**
+```typescript
+/**
+ * Calculates the optimal route using A* pathfinding algorithm.
+ * 
+ * @param startNodeId - Starting point
+ * @param endNodeId - Destination
+ * @param requireAccessible - If true, only uses wheelchair-accessible paths
+ * @returns PathResult with route and turn-by-turn instructions
+ * @throws Error if no valid route exists
+ */
+async function calculateRoute(
+  startNodeId: string,
+  endNodeId: string,
+  requireAccessible: boolean
+): Promise<PathResult> {
+  // ...
+}
+```
+
+### RULE 2: Comment WHY, Not WHAT
+
+✅ **DO:**
+```typescript
+// Debounce search to avoid excessive API calls during typing
+const debouncedSearch = useDebounce(searchQuery, 500);
+```
+
+❌ **DON'T:**
+```typescript
+// Set debounced search
+const debouncedSearch = useDebounce(searchQuery, 500);
+```
+
+---
+
+## 🚫 Anti-Patterns to Avoid
+
+### ❌ ANTI-PATTERN 1: God Components
+**Problem:** One component doing everything  
+**Solution:** Break into smaller, focused components
+
+### ❌ ANTI-PATTERN 2: Prop Drilling
+**Problem:** Passing props through many levels  
+**Solution:** Use Context API or Zustand store
+
+### ❌ ANTI-PATTERN 3: Mixing Concerns
+**Problem:** Business logic, API calls, and UI in one component  
+**Solution:** Separate into services, hooks, and components
+
+### ❌ ANTI-PATTERN 4: Not Handling Loading States
+**Problem:** No loading indicators during async operations  
+**Solution:** Always show loading state
+
+### ❌ ANTI-PATTERN 5: Ignoring Errors
+**Problem:** `catch` blocks with only `console.log`  
+**Solution:** Handle errors properly, show user feedback
+
+### ❌ ANTI-PATTERN 6: Not Checking ServiceResponse.isSuccess
+**Problem:** Accessing `data` without checking `isSuccess`  
+**Solution:** Always validate API responses
+
+```typescript
+// ❌ WRONG
+const data = response.data.data;  // Might be undefined!
+
+// ✅ CORRECT
+if (response.data.isSuccess && response.data.data) {
+  const data = response.data.data;
+} else {
+  throw new Error(response.data.errorMessage);
+}
+```
+
+---
+
+## ✅ Pull Request Checklist
+
+Before submitting a PR, ensure:
+
+- [ ] Code follows established patterns
+- [ ] TypeScript types are properly defined (no `any`)
+- [ ] Error handling is implemented
+- [ ] Loading states are handled
+- [ ] User feedback is provided (toasts, errors)
+- [ ] Components are tested
+- [ ] Code is formatted consistently
+- [ ] No console.log statements left
+- [ ] README is updated if needed
+- [ ] Commit messages are descriptive
+- [ ] ServiceResponse.isSuccess is checked
+- [ ] API errors are handled properly
+- [ ] Accessibility requirements met
+- [ ] Responsive design implemented
+
+---
+
+## 🔗 API Endpoints Reference
+
+**Base URL:** `https://localhost:7014` (Development) | `https://api.wayfinder.com` (Production)
+
+**Key Endpoints:**
+- `POST /api/auth/login` - Login
+- `POST /api/auth/refresh-token` - Refresh token
+- `POST /api/auth/logout` - Logout
+- `GET /api/buildings?pageNumber={page}&pageSize={size}` - Get buildings (paginated)
+- `GET /api/buildings/{id}` - Get building by ID
+- `POST /api/buildings` - Create building (Admin)
+- `PUT /api/buildings/{id}` - Update building (Admin)
+- `DELETE /api/buildings/{id}` - Delete building (Admin)
+- `GET /api/nodes/scan-qr?qrCode={code}` - Scan QR code
+- `GET /api/routes/calculate?startNodeId={start}&endNodeId={end}` - Calculate route
+- `GET /api/search/nodes?query={term}` - Search nodes
+
+**See FRONTEND-API-REFERENCE.md for complete API documentation.**
+
+---
+
+## 📖 Additional Resources
+
+- **API Reference:** `FRONTEND-API-REFERENCE.md`
+- **Development Guide:** `FRONTEND-DEVELOPMENT-GUIDE.md`
+- **Web Guide:** `WEB-FRONTEND-GUIDE.md`
+- **Mobile Guide:** `MOBILE-FRONTEND-GUIDE.md`
+- **Frontend Rules:** `FRONTEND-RULES.md`
+- **Frontend README:** `FRONTEND-README.md`
+
+---
+
+## 🎯 Code Sharing Strategy
+
+**These can be 100% shared between web and mobile:**
+- ✅ API Services (`src/api/*.service.ts`)
+- ✅ Type Definitions (`src/types/*.ts`)
+- ✅ Zustand Stores (`src/store/*.ts`)
+- ✅ Custom Hooks (`src/hooks/*.ts`) - 80-90% shared
+- ✅ Utility Functions (`src/utils/*.ts`)
+
+**These are platform-specific:**
+- ❌ Components (different UI libraries)
+- ❌ Navigation (React Router vs React Navigation)
+- ❌ Styling (Tailwind CSS vs React Native StyleSheet)
+
+**Goal:** Maximize code sharing (30-50% reusable code)
+
+---
+
+## 🚨 Critical Rules Summary
+
+1. **NEVER use `any` type in TypeScript**
+2. **ALWAYS check `ServiceResponse.isSuccess` before accessing `data`**
+3. **ALWAYS handle errors properly**
+4. **ALWAYS show loading states**
+5. **ALWAYS use dedicated service classes for API calls**
+6. **ALWAYS validate API responses**
+7. **NEVER store sensitive data in localStorage/AsyncStorage**
+8. **ALWAYS use Zustand for state management**
+9. **ALWAYS keep components small (< 200 lines)**
+10. **ALWAYS write meaningful commit messages**
+
+---
+
+**Last Updated:** December 2, 2025  
+**Maintained By:** Wayfinder Development Team
+
+**Remember:** Consistency, clarity, and maintainability are more important than cleverness!
+

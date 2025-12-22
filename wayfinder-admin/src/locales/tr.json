@@ -1,0 +1,184 @@
+{
+    "common": {
+        "loading": "Yükleniyor...",
+        "error": "Bir hata oluştu",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "create": "Oluştur",
+        "search": "Ara",
+        "noResults": "Sonuç bulunamadı",
+        "confirm": "Onayla",
+        "actions": "İşlemler",
+        "submit": "Gönder",
+        "back": "Geri",
+        "next": "İleri",
+        "close": "Kapat",
+        "yes": "Evet",
+        "no": "Hayır",
+        "success": "Başarılı",
+        "warning": "Uyarı",
+        "info": "Bilgi"
+    },
+    "nav": {
+        "dashboard": "Panel",
+        "buildings": "Binalar",
+        "floors": "Katlar",
+        "nodes": "Düğümler",
+        "edges": "Kenarlar",
+        "routes": "Rotalar",
+        "users": "Kullanıcılar",
+        "analytics": "Analitik",
+        "translations": "Çeviriler",
+        "settings": "Ayarlar",
+        "logout": "Çıkış"
+    },
+    "buildings": {
+        "title": "Binalar",
+        "create": "Bina Oluştur",
+        "edit": "Binayı Düzenle",
+        "name": "İsim",
+        "address": "Adres",
+        "floors": "Katlar",
+        "floorCount": "{{count}} kat",
+        "deleteConfirm": "Bu binayı silmek istediğinizden emin misiniz?",
+        "createSuccess": "Bina başarıyla oluşturuldu",
+        "updateSuccess": "Bina başarıyla güncellendi",
+        "deleteSuccess": "Bina başarıyla silindi"
+    },
+    "floors": {
+        "title": "Katlar",
+        "create": "Kat Oluştur",
+        "edit": "Katı Düzenle",
+        "name": "Kat Adı",
+        "floorPlan": "Kat Planı",
+        "floorPlanUrl": "Kat Planı URL",
+        "building": "Bina",
+        "nodeCount": "{{count}} düğüm"
+    },
+    "nodes": {
+        "title": "Düğümler",
+        "create": "Düğüm Oluştur",
+        "edit": "Düğümü Düzenle",
+        "name": "Düğüm Adı",
+        "type": "Tür",
+        "coordinates": "Koordinatlar",
+        "qrCode": "QR Kod",
+        "floor": "Kat",
+        "types": {
+            "room": "Oda",
+            "corridor": "Koridor",
+            "elevator": "Asansör",
+            "stairs": "Merdiven",
+            "entrance": "Giriş",
+            "restroom": "Tuvalet",
+            "informationDesk": "Danışma",
+            "unknown": "Bilinmeyen"
+        }
+    },
+    "edges": {
+        "title": "Kenarlar",
+        "create": "Kenar Oluştur",
+        "nodeA": "Başlangıç Düğümü",
+        "nodeB": "Bitiş Düğümü",
+        "weight": "Ağırlık",
+        "accessible": "Erişilebilir"
+    },
+    "routes": {
+        "title": "Rotalar",
+        "calculate": "Rota Hesapla",
+        "start": "Başlangıç Noktası",
+        "end": "Bitiş Noktası",
+        "accessibleOnly": "Sadece erişilebilir rotalar",
+        "totalDistance": "Toplam Mesafe",
+        "estimatedTime": "Tahmini Süre",
+        "noRouteFound": "Seçilen noktalar arasında rota bulunamadı"
+    },
+    "translations": {
+        "title": "Çeviri Yönetimi",
+        "description": "Binalar, katlar ve düğümler için çevirileri yönetin",
+        "entityType": "Varlık Türü",
+        "entityId": "Varlık ID",
+        "property": "Özellik",
+        "language": "Dil",
+        "value": "Çevrilmiş Değer",
+        "originalValue": "Orijinal Değer",
+        "add": "Çeviri Ekle",
+        "edit": "Çeviriyi Düzenle",
+        "noTranslations": "Bu varlık için çeviri bulunamadı",
+        "selectEntity": "Çevirileri yönetmek için bir varlık seçin",
+        "createSuccess": "Çeviri başarıyla oluşturuldu",
+        "updateSuccess": "Çeviri başarıyla güncellendi",
+        "deleteSuccess": "Çeviri başarıyla silindi",
+        "entityTypes": {
+            "building": "Bina",
+            "floor": "Kat",
+            "node": "Düğüm"
+        },
+        "properties": {
+            "name": "İsim",
+            "address": "Adres"
+        }
+    },
+    "users": {
+        "title": "Kullanıcılar",
+        "create": "Kullanıcı Oluştur",
+        "edit": "Kullanıcıyı Düzenle",
+        "email": "E-posta",
+        "firstName": "Ad",
+        "lastName": "Soyad",
+        "role": "Rol",
+        "status": "Durum",
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "roles": {
+            "admin": "Yönetici",
+            "buildingManager": "Bina Yöneticisi",
+            "viewer": "İzleyici"
+        }
+    },
+    "analytics": {
+        "title": "Analitik",
+        "qrScans": "QR Kod Taramaları",
+        "routeCalculations": "Rota Hesaplamaları",
+        "searchQueries": "Arama Sorguları",
+        "popularNodes": "Popüler Düğümler",
+        "popularRoutes": "Popüler Rotalar",
+        "dateRange": "Tarih Aralığı"
+    },
+    "auth": {
+        "login": "Giriş",
+        "logout": "Çıkış",
+        "email": "E-posta",
+        "password": "Şifre",
+        "forgotPassword": "Şifremi Unuttum",
+        "resetPassword": "Şifreyi Sıfırla",
+        "loginFailed": "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.",
+        "sessionExpired": "Oturumunuz sona erdi. Lütfen tekrar giriş yapın."
+    },
+    "language": {
+        "select": "Dil Seçin",
+        "en": "English",
+        "tr": "Türkçe"
+    },
+    "errors": {
+        "required": "Bu alan zorunludur",
+        "invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
+        "minLength": "En az {{min}} karakter olmalıdır",
+        "maxLength": "En fazla {{max}} karakter olmalıdır",
+        "networkError": "Ağ hatası. Lütfen bağlantınızı kontrol edin.",
+        "serverError": "Sunucu hatası. Lütfen daha sonra tekrar deneyin.",
+        "unauthorized": "Bu işlemi gerçekleştirme yetkiniz yok.",
+        "notFound": "İstenen kaynak bulunamadı."
+    },
+    "pagination": {
+        "page": "Sayfa",
+        "of": "/",
+        "showing": "Gösterilen",
+        "to": "-",
+        "entries": "kayıt",
+        "previous": "Önceki",
+        "next": "Sonraki"
+    }
+}

@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Wayfinder Mobile",
+    "slug": "wayfinder-mobile",
+    "version": "1.0.0",
+    "scheme": "wayfinder",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#3b82f6",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wayfinder.mobile"
+    },
+    "android": {
+      "package": "com.wayfinder.mobile",
+      "permissions": [
+        "CAMERA"
+      ]
+    },
+    "web": {},
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Wayfinder to access your camera to scan QR codes for navigation."
+        }
+      ]
+    ]
+  }
+}

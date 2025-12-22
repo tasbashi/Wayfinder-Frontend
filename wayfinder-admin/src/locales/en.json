@@ -1,0 +1,184 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "create": "Create",
+        "search": "Search",
+        "noResults": "No results found",
+        "confirm": "Confirm",
+        "actions": "Actions",
+        "submit": "Submit",
+        "back": "Back",
+        "next": "Next",
+        "close": "Close",
+        "yes": "Yes",
+        "no": "No",
+        "success": "Success",
+        "warning": "Warning",
+        "info": "Info"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "buildings": "Buildings",
+        "floors": "Floors",
+        "nodes": "Nodes",
+        "edges": "Edges",
+        "routes": "Routes",
+        "users": "Users",
+        "analytics": "Analytics",
+        "translations": "Translations",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "buildings": {
+        "title": "Buildings",
+        "create": "Create Building",
+        "edit": "Edit Building",
+        "name": "Name",
+        "address": "Address",
+        "floors": "Floors",
+        "floorCount": "{{count}} floor(s)",
+        "deleteConfirm": "Are you sure you want to delete this building?",
+        "createSuccess": "Building created successfully",
+        "updateSuccess": "Building updated successfully",
+        "deleteSuccess": "Building deleted successfully"
+    },
+    "floors": {
+        "title": "Floors",
+        "create": "Create Floor",
+        "edit": "Edit Floor",
+        "name": "Floor Name",
+        "floorPlan": "Floor Plan",
+        "floorPlanUrl": "Floor Plan URL",
+        "building": "Building",
+        "nodeCount": "{{count}} node(s)"
+    },
+    "nodes": {
+        "title": "Nodes",
+        "create": "Create Node",
+        "edit": "Edit Node",
+        "name": "Node Name",
+        "type": "Type",
+        "coordinates": "Coordinates",
+        "qrCode": "QR Code",
+        "floor": "Floor",
+        "types": {
+            "room": "Room",
+            "corridor": "Corridor",
+            "elevator": "Elevator",
+            "stairs": "Stairs",
+            "entrance": "Entrance",
+            "restroom": "Restroom",
+            "informationDesk": "Information Desk",
+            "unknown": "Unknown"
+        }
+    },
+    "edges": {
+        "title": "Edges",
+        "create": "Create Edge",
+        "nodeA": "Start Node",
+        "nodeB": "End Node",
+        "weight": "Weight",
+        "accessible": "Accessible"
+    },
+    "routes": {
+        "title": "Routes",
+        "calculate": "Calculate Route",
+        "start": "Start Point",
+        "end": "End Point",
+        "accessibleOnly": "Accessible routes only",
+        "totalDistance": "Total Distance",
+        "estimatedTime": "Estimated Time",
+        "noRouteFound": "No route found between selected points"
+    },
+    "translations": {
+        "title": "Translation Management",
+        "description": "Manage translations for buildings, floors, and nodes",
+        "entityType": "Entity Type",
+        "entityId": "Entity ID",
+        "property": "Property",
+        "language": "Language",
+        "value": "Translated Value",
+        "originalValue": "Original Value",
+        "add": "Add Translation",
+        "edit": "Edit Translation",
+        "noTranslations": "No translations found for this entity",
+        "selectEntity": "Select an entity to manage translations",
+        "createSuccess": "Translation created successfully",
+        "updateSuccess": "Translation updated successfully",
+        "deleteSuccess": "Translation deleted successfully",
+        "entityTypes": {
+            "building": "Building",
+            "floor": "Floor",
+            "node": "Node"
+        },
+        "properties": {
+            "name": "Name",
+            "address": "Address"
+        }
+    },
+    "users": {
+        "title": "Users",
+        "create": "Create User",
+        "edit": "Edit User",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "role": "Role",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "roles": {
+            "admin": "Admin",
+            "buildingManager": "Building Manager",
+            "viewer": "Viewer"
+        }
+    },
+    "analytics": {
+        "title": "Analytics",
+        "qrScans": "QR Code Scans",
+        "routeCalculations": "Route Calculations",
+        "searchQueries": "Search Queries",
+        "popularNodes": "Popular Nodes",
+        "popularRoutes": "Popular Routes",
+        "dateRange": "Date Range"
+    },
+    "auth": {
+        "login": "Login",
+        "logout": "Logout",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot Password?",
+        "resetPassword": "Reset Password",
+        "loginFailed": "Login failed. Please check your credentials.",
+        "sessionExpired": "Your session has expired. Please login again."
+    },
+    "language": {
+        "select": "Select Language",
+        "en": "English",
+        "tr": "Türkçe"
+    },
+    "errors": {
+        "required": "This field is required",
+        "invalidEmail": "Please enter a valid email address",
+        "minLength": "Must be at least {{min}} characters",
+        "maxLength": "Must be at most {{max}} characters",
+        "networkError": "Network error. Please check your connection.",
+        "serverError": "Server error. Please try again later.",
+        "unauthorized": "You are not authorized to perform this action.",
+        "notFound": "The requested resource was not found."
+    },
+    "pagination": {
+        "page": "Page",
+        "of": "of",
+        "showing": "Showing",
+        "to": "to",
+        "entries": "entries",
+        "previous": "Previous",
+        "next": "Next"
+    }
+}

@@ -1,0 +1,35 @@
+# Common
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+.env.*.local
+dist/
+build/
+
+# Expo
+.expo/
+*.jks
+*.p8
+*.pkpass
+*.key
+android/
+ios/
+bin/
+obj/
+
+# Web (Vite/React)
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Tests
+coverage/
+
+# Local history
+.agent/
+.cursor/
+documents/
+GEMINI.md
