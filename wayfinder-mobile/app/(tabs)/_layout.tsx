@@ -1,7 +1,15 @@
+/**
+ * Tab Layout
+ * 
+ * Main tab navigation with 5 tabs:
+ * Home, Explore, Scanner, Profile
+ */
+
 import { Tabs } from "expo-router";
-import { Home, Navigation, QrCode, Settings } from "lucide-react-native";
+import { Home, Search, QrCode, User } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Platform } from "react-native";
+import { theme, getShadowStyle } from "@/theme";
 
 export default function TabLayout() {
     const { t } = useTranslation();
@@ -10,8 +18,8 @@ export default function TabLayout() {
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: "#3b82f6",
-                tabBarInactiveTintColor: "#9ca3af",
+                tabBarActiveTintColor: theme.colors.primary[500],
+                tabBarInactiveTintColor: theme.colors.neutral[400],
                 tabBarStyle: styles.tabBar,
                 tabBarLabelStyle: styles.tabBarLabel,
                 tabBarIconStyle: styles.tabBarIcon,
@@ -20,36 +28,36 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: t("tabs.home"),
+                    title: t("tabs.home", "Home"),
                     tabBarIcon: ({ color, size }) => (
                         <Home size={size} color={color} />
                     ),
                 }}
             />
             <Tabs.Screen
-                name="navigate"
+                name="explore"
                 options={{
-                    title: t("tabs.navigate"),
+                    title: t("tabs.explore", "Explore"),
                     tabBarIcon: ({ color, size }) => (
-                        <Navigation size={size} color={color} />
+                        <Search size={size} color={color} />
                     ),
                 }}
             />
             <Tabs.Screen
                 name="scanner"
                 options={{
-                    title: t("tabs.scanner"),
+                    title: t("tabs.scanner", "Scan"),
                     tabBarIcon: ({ color, size }) => (
                         <QrCode size={size} color={color} />
                     ),
                 }}
             />
             <Tabs.Screen
-                name="settings"
+                name="profile"
                 options={{
-                    title: t("tabs.settings"),
+                    title: t("tabs.profile", "Profile"),
                     tabBarIcon: ({ color, size }) => (
-                        <Settings size={size} color={color} />
+                        <User size={size} color={color} />
                     ),
                 }}
             />
@@ -59,24 +67,20 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
     tabBar: {
-        backgroundColor: "#ffffff",
+        backgroundColor: theme.colors.backgroundCard,
         borderTopWidth: 1,
-        borderTopColor: "#e5e7eb",
-        height: 65,
+        borderTopColor: theme.colors.border,
+        height: theme.layout.tabBarHeight,
         paddingTop: 8,
-        paddingBottom: 8,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 10,
+        paddingBottom: Platform.OS === "ios" ? 20 : 8,
+        ...getShadowStyle("tabBar"),
     },
     tabBarLabel: {
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: "600",
-        marginTop: 4,
+        marginTop: 2,
     },
     tabBarIcon: {
-        marginBottom: -4,
+        marginBottom: -2,
     },
 });

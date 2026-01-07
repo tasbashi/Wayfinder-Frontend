@@ -133,7 +133,10 @@
         "loadingBuildings": "Loading buildings...",
         "noAddress": "No address available",
         "floor": "{{count}} floor",
-        "floor_plural": "{{count}} floors"
+        "floor_plural": "{{count}} floors",
+        "searchNodes": "Search locations in this building...",
+        "noNodes": "No locations found",
+        "noNodesDesc": "No locations match your search."
     },
     "route": {
         "title": "Calculate Route",

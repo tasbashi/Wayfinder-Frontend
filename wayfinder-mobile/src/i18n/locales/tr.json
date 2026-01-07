@@ -133,7 +133,10 @@
         "loadingBuildings": "Binalar yükleniyor...",
         "noAddress": "Adres bilgisi yok",
         "floor": "{{count}} kat",
-        "floor_plural": "{{count}} kat"
+        "floor_plural": "{{count}} kat",
+        "searchNodes": "Bu binadaki konumları ara...",
+        "noNodes": "Konum bulunamadı",
+        "noNodesDesc": "Aramanızla eşleşen konum yok."
     },
     "route": {
         "title": "Rota Hesapla",

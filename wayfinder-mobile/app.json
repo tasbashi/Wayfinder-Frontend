@@ -7,6 +7,7 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
+      "image": "./assets/splash.png",
       "backgroundColor": "#3b82f6",
       "resizeMode": "contain"
     },
@@ -20,7 +21,9 @@
     "android": {
       "package": "com.wayfinder.mobile",
       "permissions": [
-        "CAMERA"
+        "CAMERA",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {},
@@ -30,7 +33,13 @@
         {
           "cameraPermission": "Allow Wayfinder to access your camera to scan QR codes for navigation."
         }
-      ]
-    ]
+      ],
+      "expo-router"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d18f1e59-9d38-40f4-b350-987a2a0299cd"
+      }
+    }
   }
 }
